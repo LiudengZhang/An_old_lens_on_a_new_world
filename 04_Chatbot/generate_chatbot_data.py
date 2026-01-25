@@ -29,6 +29,12 @@ PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 OUTPUTS_DIR = PROJECT_ROOT / "extra" / "outputs"
 COMPETITION_DIR = RAW_DIR / "competition_data"
 
+# =============================================================================
+# HOLDOUT SPLIT CONFIG (must match notebook 03_full_ensemble.ipynb)
+# =============================================================================
+SEED = 42
+HOLDOUT_FRACTION = 0.15
+
 # Ensure output directory exists
 CHATBOT_DATA.mkdir(parents=True, exist_ok=True)
 
@@ -189,15 +195,57 @@ else:
 
 
 # =============================================================================
+# [2.5] LOAD TRANSFORM PARAMETERS
+# =============================================================================
+
+print("\n[2.5] Loading transform parameters...")
+
+transform_params_path = OUTPUTS_DIR / 'transform_params.json'
+if transform_params_path.exists():
+    with open(transform_params_path, 'r') as f:
+        TRANSFORM_PARAMS = json.load(f)
+    print(f"  Transform: {TRANSFORM_PARAMS}")
+else:
+    TRANSFORM_PARAMS = {'method': 'none', 'shift': 0}
+    print("  No transform params found, using identity")
+
+def inverse_transform(y, params):
+    """Inverse transform predictions from log space to original space."""
+    if params['method'] == 'log':
+        return np.expm1(y) - params['shift']
+    return y
+
+
+# =============================================================================
 # [3] GENERATE predictions.csv
 # =============================================================================
 
 print("\n[3] Generating predictions.csv...")
 
 if oof_predictions and train_raw is not None:
-    # Average ensemble predictions
-    preds_list = list(oof_predictions.values())
-    ensemble_pred = np.mean(preds_list, axis=0)
+    # Filter to only use good models (exclude broken/low-quality ones)
+    GOOD_MODELS = ['lgb', 'xgb', 'cat', 'hist', 'extra_trees', 'knn', 'ridge']
+    good_preds = []
+    for model_name in GOOD_MODELS:
+        if model_name in oof_predictions:
+            pred = oof_predictions[model_name]
+            # Skip if all zeros or near-zero variance
+            if pred.std() > 0.01 and (pred == 0).sum() < len(pred) * 0.5:
+                good_preds.append(pred)
+                print(f"  Using model: {model_name}")
+
+    if not good_preds:
+        print("  WARNING: No good models found, using all predictions")
+        good_preds = list(oof_predictions.values())
+
+    # Average ensemble predictions from good models only
+    ensemble_pred_raw = np.mean(good_preds, axis=0)
+    print(f"  Ensemble of {len(good_preds)} models")
+
+    # CRITICAL FIX: Inverse transform predictions from log space
+    ensemble_pred = inverse_transform(ensemble_pred_raw, TRANSFORM_PARAMS)
+    print(f"  Predictions inverted from log space: [{ensemble_pred.min():.4f}, {ensemble_pred.max():.4f}]")
+
     n_preds = len(ensemble_pred)
 
     # Get target
@@ -210,10 +258,24 @@ if oof_predictions and train_raw is not None:
             train_raw.get('REVPAR_GROWTH_2022_2025_PCT', 0)
         )
 
-    # Handle size mismatch (OOF is on training fold, not full data)
-    # Use only first n_preds rows that match predictions
-    train_subset = train_raw.head(n_preds).copy()
-    print(f"  Using {n_preds} rows (OOF subset)")
+    # CRITICAL FIX: Recreate holdout split to get correct row alignment
+    # OOF predictions are for training rows (NOT holdout), based on UBID split
+    np.random.seed(SEED)
+    ubids = train_raw['UBID'].unique()
+    np.random.shuffle(ubids)
+    n_holdout = int(len(ubids) * HOLDOUT_FRACTION)
+    holdout_ubids = set(ubids[:n_holdout])
+    train_mask = ~train_raw['UBID'].isin(holdout_ubids)
+
+    # Select only the training rows that correspond to OOF predictions
+    train_subset = train_raw[train_mask].reset_index(drop=True).copy()
+    print(f"  Recreated holdout split: {len(train_subset)} training rows (holdout: {(~train_mask).sum()})")
+
+    # Verify alignment
+    if len(train_subset) != n_preds:
+        print(f"  WARNING: Row count mismatch! train_subset={len(train_subset)}, predictions={n_preds}")
+    else:
+        print(f"  Row alignment verified: {n_preds} rows")
 
     # Build predictions DataFrame
     predictions_df = pd.DataFrame({
@@ -262,9 +324,8 @@ else:
 print("\n[4] Generating model_performance.json...")
 
 if oof_predictions and train_raw is not None:
-    # Get target and predictions (use subset that matches OOF)
-    n_preds = len(ensemble_pred)
-    train_subset = train_raw.head(n_preds)
+    # Use the train_subset already created with correct holdout alignment
+    # (train_subset was defined in section [3] with proper UBID-based split)
     y_true = train_subset['target'].values
     y_pred = ensemble_pred
 
@@ -456,8 +517,8 @@ else:
 print("\n[7] Generating drivetime_analysis.csv...")
 
 if oof_predictions and train_raw is not None:
-    n_preds = len(ensemble_pred)
-    train_drv_subset = train_raw.head(n_preds)
+    # Use the train_subset already created with correct holdout alignment
+    train_drv_subset = train_subset  # Reuse properly aligned data
     y_true_drv = train_drv_subset['target'].values
     y_pred_drv = ensemble_pred
 

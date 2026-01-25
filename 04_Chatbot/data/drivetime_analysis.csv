@@ -1,0 +1,4 @@
+drivetime,model_r2,model_rmse,avg_amenity_count,best_for_category,explanation
+10min,-1.907,0.3805,87.7,downtown/urban core,Best for high-density urban core areas with walking/short trips
+15min,-2.056,0.3776,229.9,suburban/mixed,Best for mixed-use areas balancing convenience and reach
+30min,-2.109,0.3745,1014.9,outer suburb/exurban,Best for outer suburbs where residents are used to longer commutes

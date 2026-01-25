@@ -1,0 +1,26 @@
+amenity_type,amenity_category,avg_count_10min,avg_count_15min,avg_count_30min,correlation_with_revpar_pre,correlation_with_revpar_post,correlation_change,interpretation
+food_count_food_court,food_dining,0.4091261834549123,0.44277270284793124,0.43961612284069096,-0.206,-0.013,0.193,food_count_food_court became more important post-COVID
+food_count_fast_casual,food_dining,4.204873506130684,4.353650111307285,4.326065259117082,-0.263,-0.094,0.169,food_count_fast_casual became more important post-COVID
+food_count_high,food_dining,2.940633245382586,3.050433714592769,3.03531669865643,-0.226,-0.075,0.151,food_count_high became more important post-COVID
+num_gas_major_brand_ta,convenience,25.796105205989605,67.45858601366393,300.51953934740885,-0.14,0.004,0.144,num_gas_major_brand_ta became more important post-COVID
+food_count_bar_pub,food_dining,11.64527394071085,12.390573424426192,12.273090211132438,-0.171,-0.039,0.133,food_count_bar_pub became more important post-COVID
+food_count_moderate,food_dining,113.07310259196026,118.44284946649267,117.50195777351247,-0.199,-0.073,0.126,food_count_moderate became more important post-COVID
+food_count_cafe,food_dining,16.7949712866677,17.595302064942043,17.46218809980806,-0.187,-0.068,0.119,food_count_cafe became more important post-COVID
+food_count_sit_down,food_dining,83.36861710383361,87.15375758040992,86.47593090211133,-0.197,-0.08,0.117,food_count_sit_down became more important post-COVID
+num_grocery_highend_ta,retail_essential,0.7774070913181783,2.040454440776848,7.542495201535509,-0.114,-0.01,0.105,num_grocery_highend_ta became more important post-COVID
+food_total_food,food_dining,174.43923638056805,181.87234205880094,180.7537811900192,-0.187,-0.083,0.105,food_total_food became more important post-COVID
+num_gas_ta,convenience,82.98448289238885,219.7880555768788,1003.3580806142035,-0.071,-0.007,0.064,num_gas_ta importance remained stable
+food_count_dessert,food_dining,3.992938072326556,4.155062562370461,4.125681381957773,-0.117,-0.094,0.023,food_count_dessert importance remained stable
+num_food_chain_ta,food_dining,74.47536659166731,192.18937591156828,843.9953166986564,-0.05,-0.03,0.02,num_food_chain_ta importance remained stable
+food_count_cheap,food_dining,58.016374359770296,59.93628617486758,59.7768905950096,-0.105,-0.105,0.0,food_count_cheap importance remained stable
+num_childcare_ta,services,0.0,0.0,0.000998080614203455,0.008,0.007,-0.001,num_childcare_ta importance remained stable
+food_count_fast_food,food_dining,54.02343628744374,55.78122361249712,55.65120921305182,-0.1,-0.103,-0.003,food_count_fast_food importance remained stable
+num_grocery_ta,retail_essential,17.870354565908915,46.41176019037384,207.39009596928983,-0.009,-0.028,-0.019,num_grocery_ta importance remained stable
+num_food_ta,food_dining,266.08953371091627,688.5363475857833,2893.7202303262957,-0.039,-0.059,-0.02,num_food_ta importance remained stable
+num_food_support_ta,food_dining,0.13259368453720227,0.3746833499654564,1.6456813819577736,0.006,-0.06,-0.066,num_food_support_ta importance remained stable
+food_nearest_sit_down_mi,food_dining,0.5732199702097902,0.9876072603693964,2.659172709800077,0.107,0.035,-0.071,food_nearest_sit_down_mi importance remained stable
+food_nearest_fast_food_mi,food_dining,0.5830851261065828,1.0234289949272,2.6796956528312856,0.095,0.024,-0.071,food_nearest_fast_food_mi importance remained stable
+food_nearest_high_price_mi,food_dining,1.7664335159547744,3.014857190366572,6.891953062392472,0.091,0.013,-0.078,food_nearest_high_price_mi importance remained stable
+num_social_ta,services,4.195437970362325,10.736700698549168,47.29965451055662,0.079,-0.132,-0.21,num_social_ta became less important post-COVID
+num_senior_ta,services,1.1036542788424237,2.760574192062639,12.790786948176583,0.085,-0.144,-0.229,num_senior_ta became less important post-COVID
+num_homeless_ta,other,0.12196446582357048,0.33077454517540494,1.5024952015355086,0.121,-0.114,-0.235,num_homeless_ta became less important post-COVID

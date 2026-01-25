@@ -1,0 +1,133 @@
+column_name,description,time_varying,scope,is_feature,is_target,category
+UBID,Anonymized Universal Building ID,No,Property,no,no,Property
+type_main,Market Classification between A to D,No,Property,yes,no,Property
+type_sub,Submarket Classification Between A to D,No,Property,yes,no,Property
+city,City where property is located,No,Property,yes,no,Property
+state,Two-letter state abbreviation (e.g. TX),No,Property,yes,no,Property
+yearbuilt,Year the property was originally constructed,No,Property,yes,no,Property
+year_renov,Year of most recent renovation (if any),No,Property,yes,no,Property
+numunits,Total number of residential units in the property,No,Property,yes,no,Property
+areaperunit,Average square footage per unit,No,Property,yes,no,Property
+mrkt_name,MSA Name,No,Property,yes,no,Property
+submrkt_name,Submarket name within MSA,No,Property,yes,no,Property
+trade_area_label,Identifier for the trade area configuration (drv10/drv15/drv30 for 10/15/30 minute drivetimes),No,TradeArea,yes,no,TradeArea
+drivetime_seconds,Drivetime threshold in seconds used to define trade area (600/900/1800),No,TradeArea,yes,no,TradeArea
+drivetime_minutes,Drivetime threshold in minutes (drivetime_seconds / 60),No,TradeArea,yes,no,TradeArea
+zip_metro,ZIP code of the property (from metro ring mapping),No,Property,yes,no,Property
+state_metro,State abbreviation from metro ring lookup,No,Property,yes,no,Property
+msa_title,Full name of the Metropolitan Statistical Area (e.g. Dallas-Fort Worth-Arlington TX),No,Neighborhood,yes,no,Neighborhood
+msa_norm_dist,Normalized distance from property to MSA center (0=center to 1=edge),No,Property,yes,no,Property
+msa_ring,Categorical ring assignment (1=urban core to 5=suburban edge) based on msa_norm_dist,No,Property,yes,no,Property
+drv10_area,Polygon area in square degrees for 10-minute drivetime isochrone,No,Property,yes,no,Property
+drv15_area,Polygon area in square degrees for 15-minute drivetime isochrone,No,Property,yes,no,Property
+drv30_area,Polygon area in square degrees for 30-minute drivetime isochrone,No,Property,yes,no,Property
+MARKET,Market name for the property,No,Property,yes,no,Property
+REVPAR_2015,Average Revenue Per Available Unit in 2015,No,Property,no,no,Property
+REVPAR_2020,Average Revenue Per Available Unit in 2020,No,Property,no,no,Property
+REVPAR_2022,Average Revenue Per Available Unit in 2022,No,Property,no,no,Property
+REVPAR_2025,Average Revenue Per Available Unit in 2025,No,Property,no,no,Property
+REVPAR_GROWTH_2015_2020_USD,Absolute change in RevPAR from 2015 to 2020 in USD,Yes,Property,no,no,Property
+REVPAR_GROWTH_2022_2025_USD,Absolute change in RevPAR from 2022 to 2025 in USD,Yes,Property,no,no,Property
+REVPAR_GROWTH_2015_2020_PCT,Percentage change in RevPAR from 2015 to 2020,Yes,Property,no,yes,Property
+REVPAR_GROWTH_2022_2025_PCT,Percentage change in RevPAR from 2022 to 2025,Yes,Property,no,yes,Property
+QTL_2015_2020_PCT_IN_MARKET,Quartile ranking (1-4) of pre-COVID RevPAR growth within the property's MARKET,Yes,Property,yes,no,Property
+QTL_2022_2025_PCT_IN_MARKET,Quartile ranking (1-4) of post-COVID RevPAR growth within the property's MARKET,Yes,Property,yes,no,Property
+time_window_tag,Time window identifier (pre = 2015-01-01 to 2020-02-29 | post = 2022-01-01 to 2025-12-31),Yes,TimeWindow,yes,no,TimeWindow
+time_window_label,Human-readable time window label (2015_to_2020Feb | 2022_to_2025),Yes,TimeWindow,yes,no,TimeWindow
+num_grocery_ta,Count of grocery stores (supermarket/greengrocer/marketplace) within trade area,No,TradeArea,yes,no,TradeArea
+num_grocery_highend_ta,Count of high-end/experiential grocery stores within trade area (e.g. Whole Foods),No,TradeArea,yes,no,TradeArea
+num_gas_ta,Count of fuel stations and convenience stores within trade area,No,TradeArea,yes,no,TradeArea
+num_gas_major_brand_ta,Count of major oil brand fuel stations within trade area (Shell/Exxon/BP/etc.),No,TradeArea,yes,no,TradeArea
+num_social_ta,Total count of social service facilities within trade area,No,TradeArea,yes,no,TradeArea
+num_senior_ta,Count of senior care/center facilities within trade area,No,TradeArea,yes,no,TradeArea
+num_food_support_ta,Count of food banks and food support facilities within trade area,No,TradeArea,yes,no,TradeArea
+num_childcare_ta,Count of childcare/daycare facilities within trade area,No,TradeArea,yes,no,TradeArea
+num_food_ta,Total count of food and drink establishments within trade area,No,TradeArea,yes,no,TradeArea
+num_food_chain_ta,Count of chain food/restaurant establishments within trade area,No,TradeArea,yes,no,TradeArea
+total_amenities_ta,Total count of all OSM amenities within trade area (non-empty amenity tag),No,TradeArea,yes,no,TradeArea
+aarp_score_engage,AARP Livability Index - Engagement domain score (0-100),No,Neighborhood,yes,no,Neighborhood
+aarp_score_env,AARP Livability Index - Environment domain score (0-100),No,Neighborhood,yes,no,Neighborhood
+aarp_score_health,AARP Livability Index - Health domain score (0-100),No,Neighborhood,yes,no,Neighborhood
+aarp_score_house,AARP Livability Index - Housing domain score (0-100),No,Neighborhood,yes,no,Neighborhood
+aarp_score_opp,AARP Livability Index - Opportunity domain score (0-100),No,Neighborhood,yes,no,Neighborhood
+aarp_score_prox,AARP Livability Index - Neighborhood (Proximity) domain score (0-100),No,Neighborhood,yes,no,Neighborhood
+aarp_score_trans,AARP Livability Index - Transportation domain score (0-100),No,Neighborhood,yes,no,Neighborhood
+aarp_met_engage_broad,AARP metric - Broadband access rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_engage_civic,AARP metric - Civic engagement rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_engage_culture,AARP metric - Cultural institutions accessibility,No,Neighborhood,yes,no,Neighborhood
+aarp_met_engage_social,AARP metric - Social involvement opportunities,No,Neighborhood,yes,no,Neighborhood
+aarp_met_engage_vote,AARP metric - Voter participation rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_env_air,AARP metric - Air quality index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_env_pollute,AARP metric - Pollution exposure level,No,Neighborhood,yes,no,Neighborhood
+aarp_met_env_road,AARP metric - Road safety/quality,No,Neighborhood,yes,no,Neighborhood
+aarp_met_env_water,AARP metric - Water quality index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_health_exercise,AARP metric - Exercise opportunity access,No,Neighborhood,yes,no,Neighborhood
+aarp_met_health_hospital,AARP metric - Hospital proximity/access,No,Neighborhood,yes,no,Neighborhood
+aarp_met_health_obese,AARP metric - Obesity rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_health_sate,AARP metric - Health satisfaction,No,Neighborhood,yes,no,Neighborhood
+aarp_met_health_short,AARP metric - Preventive care access,No,Neighborhood,yes,no,Neighborhood
+aarp_met_health_smoke,AARP metric - Smoking rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_house_access_step,AARP metric - Zero-step housing accessibility,No,Neighborhood,yes,no,Neighborhood
+aarp_met_house_burden,AARP metric - Housing cost burden rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_house_cost,AARP metric - Housing affordability index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_house_multifam,AARP metric - Multifamily housing availability,No,Neighborhood,yes,no,Neighborhood
+aarp_met_house_subsidy,AARP metric - Subsidized housing availability,No,Neighborhood,yes,no,Neighborhood
+aarp_met_opp_age,AARP metric - Age diversity index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_opp_grad,AARP metric - High school graduation rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_opp_income,AARP metric - Income equality index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_opp_jobs,AARP metric - Job accessibility,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_activity,AARP metric - Activity centers proximity,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_auto,AARP metric - Auto-dependency index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_land_use,AARP metric - Mixed land use index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_lib,AARP metric - Library proximity,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_market,AARP metric - Grocery/market proximity,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_park,AARP metric - Park proximity,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_sec,AARP metric - Secondary education proximity,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_trans,AARP metric - Transit stop proximity,No,Neighborhood,yes,no,Neighborhood
+aarp_met_prox_vacant,AARP metric - Vacant property rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_trans_access,AARP metric - Transit accessibility score,No,Neighborhood,yes,no,Neighborhood
+aarp_met_trans_cost,AARP metric - Transportation cost burden,No,Neighborhood,yes,no,Neighborhood
+aarp_met_trans_delay,AARP metric - Commute delay index,No,Neighborhood,yes,no,Neighborhood
+aarp_met_trans_fatal,AARP metric - Traffic fatality rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_trans_freq,AARP metric - Transit frequency,No,Neighborhood,yes,no,Neighborhood
+aarp_met_trans_limit,AARP metric - Mobility limitation rate,No,Neighborhood,yes,no,Neighborhood
+aarp_met_trans_walk,AARP metric - Walk score/walkability,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_engage_right,AARP policy - Voting rights accessibility,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_engage_vote,AARP policy - Voter registration access,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_env_connect,AARP policy - Environmental connectivity,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_env_eff,AARP policy - Energy efficiency standards,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_env_hazard,AARP policy - Hazard mitigation policies,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_health_smoke,AARP policy - Smoking restrictions,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_house_foreclose,AARP policy - Foreclosure protections,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_house_trust,AARP policy - Community land trust presence,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_house_visit,AARP policy - Visitability requirements,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_mult_age_friend,AARP policy - Age-friendly community designation,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_opp_credit,AARP policy - Credit access/fairness,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_opp_leave,AARP policy - Family/medical leave access,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_opp_wage,AARP policy - Minimum wage level,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_prox_tod,AARP policy - Transit-oriented development support,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_trans_coord,AARP policy - Transit coordination level,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_trans_full_st,AARP policy - Complete streets policy,No,Neighborhood,yes,no,Neighborhood
+aarp_pol_trans_vol,AARP policy - Volunteer driver programs,No,Neighborhood,yes,no,Neighborhood
+aarp_score,AARP Livability Index - Overall composite score (0-100),No,Neighborhood,yes,no,Neighborhood
+food_total_food,Total count of food/restaurant establishments within trade area,No,TradeArea,yes,no,TradeArea
+food_count_fast_food,Count of fast food restaurants (e.g. McDonald's) within trade area,No,TradeArea,yes,no,TradeArea
+food_count_fast_casual,Count of fast casual restaurants (e.g. Chipotle) within trade area,No,TradeArea,yes,no,TradeArea
+food_count_sit_down,Count of sit-down/full-service restaurants within trade area,No,TradeArea,yes,no,TradeArea
+food_count_cafe,Count of cafes and coffee shops within trade area,No,TradeArea,yes,no,TradeArea
+food_count_bar_pub,Count of bars and pubs within trade area,No,TradeArea,yes,no,TradeArea
+food_count_dessert,Count of dessert/ice cream shops within trade area,No,TradeArea,yes,no,TradeArea
+food_count_food_court,Count of food court establishments within trade area,No,TradeArea,yes,no,TradeArea
+food_count_cheap,Count of cheap price tier ($) food establishments within trade area,No,TradeArea,yes,no,TradeArea
+food_count_moderate,Count of moderate price tier ($$) food establishments within trade area,No,TradeArea,yes,no,TradeArea
+food_count_high,Count of high price tier ($$$) food establishments within trade area,No,TradeArea,yes,no,TradeArea
+food_nearest_fast_food_mi,Distance in miles to nearest fast food restaurant,No,Property,yes,no,Property
+food_nearest_sit_down_mi,Distance in miles to nearest sit-down restaurant,No,Property,yes,no,Property
+food_nearest_high_price_mi,Distance in miles to nearest high-end restaurant,No,Property,yes,no,Property
+supply_baseline_units,Total multifamily units in trade area that existed before the time window start,Yes,TradeArea,yes,no,TradeArea
+supply_new_units,New multifamily units added in trade area during the time window,Yes,TradeArea,yes,no,TradeArea
+supply_growth_pct,Percentage growth in supply units during time window ((new/baseline)*100),Yes,TradeArea,yes,no,TradeArea
+ownrent_avg_mortgage,Average estimated monthly mortgage payment in trade area for the time window (based on median home price),Yes,TradeArea,yes,no,TradeArea
+ownrent_avg_rent,Average monthly apartment rent in trade area for the time window ,Yes,TradeArea,yes,no,TradeArea
+ownrent_spread_abs,Absolute spread between mortgage and rent (mortgage - rent) in USD,Yes,TradeArea,yes,no,TradeArea
+ownrent_spread_pct,Percentage spread between mortgage and rent ((mortgage/rent - 1)*100),Yes,TradeArea,yes,no,TradeArea

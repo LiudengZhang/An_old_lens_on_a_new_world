@@ -6,6 +6,10 @@
 *.ckpt
 *.pdf
 
+# Allow chatbot data files
+!04_Chatbot/data/*.csv
+!04_Chatbot/data/*.json
+
 # Pycache
 __pycache__/
 *.pyc

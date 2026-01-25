@@ -1,0 +1,11 @@
+# Secrets - NEVER commit
+.streamlit/secrets.toml
+*.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Large data files (optional - include if you want them in repo)
+# data/training_data.csv
+# data/predictions.csv

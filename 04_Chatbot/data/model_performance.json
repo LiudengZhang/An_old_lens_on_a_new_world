@@ -1,0 +1,117 @@
+{
+  "model_info": {
+    "model_type": "Ensemble (LGB+XGB+CatBoost+others)",
+    "n_features": 118,
+    "training_samples": 33061,
+    "cv_folds": 5
+  },
+  "overall_performance": {
+    "rmse": 0.3780793018245308,
+    "mae": 0.32633439174294143,
+    "r2": -2.0061104483032173,
+    "mape": 1518.7511254111143
+  },
+  "by_time_period": {
+    "pre": {
+      "rmse": 0.27556635675068936,
+      "mae": 0.22135803952260144,
+      "r2": -0.8227259195414918,
+      "sample_count": 16521
+    },
+    "post": {
+      "rmse": 0.4581202100172554,
+      "mae": 0.4311901544413838,
+      "r2": -10.88019129000635,
+      "sample_count": 16540
+    }
+  },
+  "by_drivetime": {
+    "10min": {
+      "rmse": 0.3805492279021474,
+      "r2": -1.9073365602312142,
+      "sample_count": 12889
+    },
+    "15min": {
+      "rmse": 0.3775795009513754,
+      "r2": -2.0561849542513695,
+      "sample_count": 13027
+    },
+    "30min": {
+      "rmse": 0.3745029382328528,
+      "r2": -2.1090828163942144,
+      "sample_count": 7145
+    }
+  },
+  "by_city": {
+    "Dallas-Plano-Irving, TX": {
+      "rmse": 0.36662478890924566,
+      "r2": -2.9367045096549984
+    },
+    "Houston-The Woodlands-Sugar Land, TX": {
+      "rmse": 0.3942638312066118,
+      "r2": -5.521781908570961
+    },
+    "Atlanta-Sandy Springs-Roswell, GA": {
+      "rmse": 0.3840023635081667,
+      "r2": -1.1568202145803768
+    },
+    "Phoenix-Mesa-Scottsdale, AZ": {
+      "rmse": 0.39560234775259934,
+      "r2": -0.6171315518861398
+    },
+    "Fort Worth-Arlington, TX": {
+      "rmse": 0.37539960295374686,
+      "r2": -1.2365206724312858
+    },
+    "Austin-Round Rock, TX": {
+      "rmse": 0.4524636928512396,
+      "r2": -4.936359705304511
+    },
+    "San Antonio-New Braunfels, TX": {
+      "rmse": 0.39407656661106766,
+      "r2": -5.558441100539415
+    },
+    "Charlotte-Concord-Gastonia, NC-SC": {
+      "rmse": 0.334328269861952,
+      "r2": -2.312032518111023
+    },
+    "Tampa-St. Petersburg-Clearwater, FL": {
+      "rmse": 0.33932696617344,
+      "r2": -1.8569483449026931
+    },
+    "Orlando-Kissimmee-Sanford, FL": {
+      "rmse": 0.34951966823851466,
+      "r2": -2.4999469281480433
+    }
+  },
+  "quartile_accuracy": {
+    "exact_match_rate": 0.25295665587852756,
+    "within_one_quartile_rate": 0.6285653791476362,
+    "confusion_matrix": [
+      [
+        2058,
+        2134,
+        2035,
+        2039
+      ],
+      [
+        2085,
+        2071,
+        2023,
+        2087
+      ],
+      [
+        2095,
+        2064,
+        2100,
+        2005
+      ],
+      [
+        2028,
+        1996,
+        2107,
+        2134
+      ]
+    ]
+  }
+}

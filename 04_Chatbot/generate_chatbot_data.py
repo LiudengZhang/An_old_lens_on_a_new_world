@@ -236,7 +236,11 @@ else:
     print("  No transform params found, using identity")
 
 def inverse_transform(y, params):
-    """Inverse transform predictions from log space to original space."""
+    """Inverse transform predictions from log space to original space.
+
+    Forward transform: y_log = log1p(y + shift)
+    Inverse transform: y = expm1(y_log) - shift
+    """
     if params['method'] == 'log':
         return np.expm1(y) - params['shift']
     return y
@@ -264,9 +268,16 @@ if oof_predictions and train_raw is not None:
         print("  WARNING: No good models found, using all predictions")
         good_preds = list(oof_predictions.values())
 
+    # Stack predictions for ensemble statistics
+    good_preds_array = np.array(good_preds)  # Shape: (n_models, n_samples)
+
     # Average ensemble predictions from good models only
-    ensemble_pred_raw = np.mean(good_preds, axis=0)
+    ensemble_pred_raw = np.mean(good_preds_array, axis=0)
+
+    # Calculate ensemble standard deviation (model disagreement)
+    ensemble_std = np.std(good_preds_array, axis=0)
     print(f"  Ensemble of {len(good_preds)} models")
+    print(f"  Ensemble std range: [{ensemble_std.min():.4f}, {ensemble_std.max():.4f}]")
 
     # CRITICAL FIX: Inverse transform predictions from log space
     ensemble_pred = inverse_transform(ensemble_pred_raw, TRANSFORM_PARAMS)
@@ -331,10 +342,14 @@ if oof_predictions and train_raw is not None:
     # Outperformer flag
     predictions_df['is_outperformer'] = (predictions_df['quartile_actual'] >= 3).astype(str).str.lower()
 
-    # Confidence based on abs_error percentile
-    error_pcts = predictions_df['abs_error'].rank(pct=True)
+    # Ensemble variance (model disagreement) - usable without labels
+    predictions_df['ensemble_std'] = ensemble_std
+
+    # Confidence based on ensemble variance (lower std = higher confidence)
+    # This can be computed WITHOUT knowing actual values
+    std_pcts = predictions_df['ensemble_std'].rank(pct=True)
     predictions_df['prediction_confidence'] = pd.cut(
-        error_pcts, bins=[0, 0.33, 0.66, 1.0], labels=['high', 'medium', 'low']
+        std_pcts, bins=[0, 0.33, 0.66, 1.0], labels=['high', 'medium', 'low']
     )
 
     predictions_df.to_csv(CHATBOT_DATA / "predictions.csv", index=False)

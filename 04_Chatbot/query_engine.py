@@ -80,7 +80,16 @@ class QueryEngine:
     def layer2_query(self, question: str) -> dict:
         """Layer 2: Query structured data files."""
         # Determine which data files are relevant
-        context = self._gather_layer2_context(question)
+        context, has_context = self._gather_layer2_context(question)
+
+        # If no relevant context found, signal need for Layer 3
+        if not has_context:
+            return {
+                "layer": 2,
+                "answer": "The available structured data files do not contain information relevant to this question.",
+                "source": "structured data query",
+                "has_context": False,
+            }
 
         prompt = f"""You are a data analyst assistant for the BroadVail Datathon.
 Answer the user's question based ONLY on the provided data context.
@@ -107,10 +116,15 @@ Provide a clear, professional answer:"""
             "layer": 2,
             "answer": response.choices[0].message.content,
             "source": "structured data query",
+            "has_context": True,
         }
 
-    def _gather_layer2_context(self, question: str) -> str:
-        """Gather relevant data context for Layer 2."""
+    def _gather_layer2_context(self, question: str) -> Tuple[str, bool]:
+        """Gather relevant data context for Layer 2.
+
+        Returns:
+            Tuple of (context_string, has_relevant_context)
+        """
         context_parts = []
         question_lower = question.lower()
 
@@ -129,8 +143,17 @@ Provide a clear, professional answer:"""
                 df = pd.read_csv(path)
                 context_parts.append(f"FEATURE IMPORTANCE (top 20):\n{df.head(20).to_string()}")
 
-        # City summary
-        if any(kw in question_lower for kw in ["city", "cities", "houston", "phoenix", "atlanta", "compare"]):
+        # City summary (include common city names from the data)
+        city_keywords = [
+            "city", "cities", "compare", "market",
+            "houston", "dallas", "austin", "san antonio", "fort worth",  # Texas
+            "phoenix", "tucson", "scottsdale",  # Arizona
+            "atlanta", "georgia",  # Georgia
+            "charlotte", "raleigh", "durham",  # Carolinas
+            "tampa", "orlando", "jacksonville", "miami", "fort lauderdale", "florida",  # Florida
+            "nashville", "memphis", "tennessee"  # Tennessee
+        ]
+        if any(kw in question_lower for kw in city_keywords):
             path = DATA_FILES["city_summary"]
             if path.exists():
                 df = pd.read_csv(path)
@@ -165,19 +188,22 @@ Provide a clear, professional answer:"""
                 # If specific property mentioned, filter
                 context_parts.append(f"PREDICTIONS (sample):\n{df.head(20).to_string()}")
 
-        # COVID-related
-        if any(kw in question_lower for kw in ["covid", "pre", "post", "pandemic", "change"]):
+        # COVID-related (use specific keywords to avoid false positives)
+        if any(kw in question_lower for kw in ["covid", "pre-covid", "post-covid", "pandemic", "before covid", "after covid"]):
             # Add multiple relevant files
             for key in ["feature_importance", "city_summary"]:
                 path = DATA_FILES[key]
                 if path.exists():
-                    if key.endswith(".json"):
+                    if str(path).endswith(".json"):
                         with open(path) as f:
                             data = json.load(f)
                         context_parts.append(f"{key.upper()}:\n{json.dumps(data, indent=2)}")
                     else:
                         df = pd.read_csv(path)
                         context_parts.append(f"{key.upper()}:\n{df.head(20).to_string()}")
+
+        # Track whether we found specific context for the query
+        had_specific_context = len(context_parts) > 0
 
         # If no specific context matched, provide general overview
         if not context_parts:
@@ -192,7 +218,10 @@ Provide a clear, professional answer:"""
                         df = pd.read_csv(path)
                         context_parts.append(f"{key.upper()} (top 10):\n{df.head(10).to_string()}")
 
-        return "\n\n".join(context_parts) if context_parts else "No relevant data files found."
+        context_str = "\n\n".join(context_parts) if context_parts else ""
+        # Return context and whether we found relevant data
+        # (fallback general overview still counts as having some context)
+        return context_str, len(context_parts) > 0
 
     def layer3_query(self, question: str) -> dict:
         """Layer 3: Analyze raw training data."""
@@ -248,7 +277,7 @@ Provide a detailed analytical answer with specific numbers:"""
 
         # Try Layer 2
         result = self.layer2_query(question)
-        if "No relevant data files found" not in result["answer"]:
+        if result.get("has_context", True):
             result["tokens"] = self.token_usage.copy()
             return result
 

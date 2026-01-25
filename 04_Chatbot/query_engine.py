@@ -7,6 +7,26 @@ from typing import Optional, Tuple
 from config import DATA_FILES, SIMILARITY_THRESHOLD, DEFAULT_MODEL, EMBEDDING_MODEL
 
 
+DATA_CONFIDENTIALITY_MESSAGE = (
+    "I'm unable to provide property-level or raw data due to data confidentiality requirements. "
+    "The dataset used in this analysis is provided by BroadVail Capital Partners for the 2026 Rice Datathon "
+    "and must be treated as confidential.\n\n"
+    "However, I can help you with:\n"
+    "- Aggregated city-level insights\n"
+    "- Model performance metrics\n"
+    "- Feature importance analysis\n"
+    "- General trends and findings from our analysis\n\n"
+    "Please feel free to ask about these topics instead!"
+)
+
+SENSITIVE_KEYWORDS = [
+    "property_id", "property id", "specific property", "individual property",
+    "raw data", "training data", "download data", "export data", "give me the data",
+    "show me all", "list all properties", "all records", "full dataset",
+    "p0", "p1", "p2",  # property ID patterns
+]
+
+
 class QueryEngine:
     """3-layer query engine for BroadVail Datathon data."""
 
@@ -15,6 +35,11 @@ class QueryEngine:
         self.findings = self._load_findings()
         self.findings_embeddings = None
         self.token_usage = {"input": 0, "output": 0}
+
+    def _is_sensitive_query(self, question: str) -> bool:
+        """Check if the question asks for confidential property-level data."""
+        question_lower = question.lower()
+        return any(kw in question_lower for kw in SENSITIVE_KEYWORDS)
 
     def _load_findings(self) -> list:
         """Load pre-computed findings from JSON."""
@@ -173,6 +198,32 @@ Provide a clear, professional answer:"""
                 df = pd.read_csv(path)
                 context_parts.append(f"DRIVETIME ANALYSIS:\n{df.to_string()}")
 
+        # Suburb × Drivetime interaction (15-minute city analysis)
+        if any(kw in question_lower for kw in ["suburb", "urban", "downtown", "ring", "15-minute city", "15 minute city", "location type"]):
+            # Provide the pre-computed analysis from presentation notes
+            suburb_data = """LOCATION × DRIVETIME PERFORMANCE (RevPAR Growth %):
+                        10-min    15-min    30-min
+Downtown           8.9%      7.2%      6.1%
+Inner Suburb       9.2%      8.1%      6.8%
+Donut Ring         7.0%      6.5%      5.8%
+Outer Suburb      11.6%      9.4%      7.3%
+
+KEY INSIGHT: Outer suburbs with tight amenity access (10-min drivetime) = optimal performance.
+This is the '15-minute suburb' pattern - the 15-minute city concept applies more strongly in suburbs."""
+            context_parts.append(suburb_data)
+
+        # Feature rank changes
+        if any(kw in question_lower for kw in ["rank change", "ranking", "moved up", "moved down", "rose", "fell"]):
+            path = DATA_FILES["feature_importance"]
+            if path.exists():
+                df = pd.read_csv(path)
+                df["rank_change"] = df["rank_pre"] - df["rank_post"]
+                # Top risers and fallers
+                risers = df.nlargest(10, "rank_change")[["feature_name", "rank_pre", "rank_post", "rank_change"]]
+                fallers = df.nsmallest(10, "rank_change")[["feature_name", "rank_pre", "rank_post", "rank_change"]]
+                context_parts.append(f"FEATURES THAT ROSE IN IMPORTANCE:\n{risers.to_string()}")
+                context_parts.append(f"FEATURES THAT FELL IN IMPORTANCE:\n{fallers.to_string()}")
+
         # Amenity analysis
         if any(kw in question_lower for kw in ["amenity", "amenities", "restaurant", "grocery", "park", "transit"]):
             path = DATA_FILES["amenity_analysis"]
@@ -180,13 +231,43 @@ Provide a clear, professional answer:"""
                 df = pd.read_csv(path)
                 context_parts.append(f"AMENITY ANALYSIS:\n{df.to_string()}")
 
-        # Predictions (for specific property queries)
-        if any(kw in question_lower for kw in ["property", "prediction", "predicted", "actual", "p0"]):
-            path = DATA_FILES["predictions"]
-            if path.exists():
-                df = pd.read_csv(path)
-                # If specific property mentioned, filter
-                context_parts.append(f"PREDICTIONS (sample):\n{df.head(20).to_string()}")
+        # Feature correlation analysis
+        if any(kw in question_lower for kw in ["correlation", "correlated", "relationship between"]):
+            importance_path = DATA_FILES["feature_importance"]
+            training_path = DATA_FILES["training_data"]
+            if importance_path.exists() and training_path.exists():
+                # Get top features
+                import re
+                match = re.search(r'top\s*(\d+)', question_lower)
+                n = min(int(match.group(1)), 25) if match else 15
+
+                importance_df = pd.read_csv(importance_path)
+                top_features = importance_df.nsmallest(n, "rank_post")["feature_name"].tolist()
+
+                training_df = pd.read_csv(training_path)
+                available = [f for f in top_features if f in training_df.columns]
+
+                if len(available) >= 3:
+                    corr_matrix = training_df[available].corr()
+                    # Find top correlated pairs
+                    pairs = []
+                    for i, f1 in enumerate(available):
+                        for j, f2 in enumerate(available):
+                            if i < j:
+                                r = corr_matrix.loc[f1, f2]
+                                pairs.append((f1, f2, round(r, 3)))
+                    pairs.sort(key=lambda x: abs(x[2]), reverse=True)
+
+                    corr_text = f"FEATURE CORRELATIONS (top {len(available)} features):\n"
+                    corr_text += "Highly correlated pairs (|r| > 0.5):\n"
+                    for f1, f2, r in pairs[:15]:
+                        if abs(r) > 0.5:
+                            corr_text += f"  {f1} <-> {f2}: {r}\n"
+                    corr_text += f"\nFull correlation matrix available with {len(available)} features."
+                    context_parts.append(corr_text)
+
+        # Predictions - only provide aggregated stats, not property-level data
+        # Property-level data is confidential per competition rules
 
         # COVID-related (use specific keywords to avoid false positives)
         if any(kw in question_lower for kw in ["covid", "pre-covid", "post-covid", "pandemic", "before covid", "after covid"]):
@@ -224,50 +305,26 @@ Provide a clear, professional answer:"""
         return context_str, len(context_parts) > 0
 
     def layer3_query(self, question: str) -> dict:
-        """Layer 3: Analyze raw training data."""
-        path = DATA_FILES["training_data"]
-        if not path.exists():
-            return {
-                "layer": 3,
-                "answer": "Raw training data file not found.",
-                "source": "error",
-            }
-
-        # Load sample of raw data
-        df = pd.read_csv(path, nrows=500)  # Limit rows to control token usage
-
-        prompt = f"""You are a data analyst assistant for the BroadVail Datathon.
-Analyze the raw training data to answer the user's question.
-The data contains apartment property information with RevPAR growth metrics.
-
-DATA COLUMNS: {list(df.columns)}
-
-DATA SAMPLE (first 500 rows):
-{df.to_string()}
-
-USER QUESTION: {question}
-
-Provide a detailed analytical answer with specific numbers:"""
-
-        response = self.client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
-        )
-
-        self.token_usage["input"] += response.usage.prompt_tokens
-        self.token_usage["output"] += response.usage.completion_tokens
-
+        """Layer 3: Disabled - raw data access restricted for confidentiality."""
         return {
             "layer": 3,
-            "answer": response.choices[0].message.content,
-            "source": "raw data analysis",
+            "answer": DATA_CONFIDENTIALITY_MESSAGE,
+            "source": "data policy",
         }
 
     def query(self, question: str, allow_layer3: bool = False) -> dict:
         """Main query method - tries layers in order."""
         # Reset token usage for this query
         self.token_usage = {"input": 0, "output": 0}
+
+        # Check for sensitive queries first (data confidentiality)
+        if self._is_sensitive_query(question):
+            return {
+                "layer": 0,
+                "answer": DATA_CONFIDENTIALITY_MESSAGE,
+                "source": "data policy",
+                "tokens": self.token_usage.copy(),
+            }
 
         # Try Layer 1 first
         result = self.layer1_query(question)
@@ -281,18 +338,22 @@ Provide a detailed analytical answer with specific numbers:"""
             result["tokens"] = self.token_usage.copy()
             return result
 
-        # Layer 3 requires explicit permission
-        if allow_layer3:
-            result = self.layer3_query(question)
-            result["tokens"] = self.token_usage.copy()
-            return result
-
+        # Layer 3 is disabled for data confidentiality
+        # Return a helpful message instead
         return {
             "layer": 2,
-            "answer": result["answer"],
-            "source": result["source"],
+            "answer": (
+                "I don't have specific pre-computed findings for this question, "
+                "and raw data analysis is not available due to data confidentiality requirements.\n\n"
+                "Try asking about:\n"
+                "- COVID impact on apartment preferences\n"
+                "- Feature importance and top predictors\n"
+                "- City-level performance comparisons\n"
+                "- Drivetime analysis (10/15/30 minute)\n"
+                "- Model performance metrics"
+            ),
+            "source": "data policy",
             "tokens": self.token_usage.copy(),
-            "needs_layer3": True,
         }
 
     def estimate_cost(self, tokens: dict, model: str = DEFAULT_MODEL) -> float:

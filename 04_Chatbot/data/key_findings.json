@@ -143,5 +143,75 @@
       "loser_characteristics": ["cbd_dependent", "restaurant_focused", "transit_reliant"]
     },
     "source": "property_characteristic_analysis"
+  },
+  {
+    "id": "finding_009",
+    "category": "feature_analysis",
+    "question_patterns": [
+      "correlation between features",
+      "feature correlation",
+      "correlated features",
+      "relationship between features",
+      "multicollinearity"
+    ],
+    "answer": "Among the top 20 most important features, most correlations are weak to moderate (|r| < 0.5), indicating the features capture distinct information. The strongest correlations are: 1) aarp_score_health and aarp_met_health_smoke (r=-0.80): negative correlation as higher smoke rates reduce health scores; 2) aarp_met_health_smoke and aarp_met_health_obese (r=0.78): health risk factors tend to cluster geographically. The AARP livability metrics show expected clustering within health/environment domains, but cross-domain correlations (e.g., health vs property age) are generally weak, supporting their combined use in the model.",
+    "supporting_data": {
+      "top_correlated_pairs": [
+        {"pair": "aarp_score_health <-> aarp_met_health_smoke", "correlation": -0.80},
+        {"pair": "aarp_met_health_smoke <-> aarp_met_health_obese", "correlation": 0.78}
+      ],
+      "interpretation": "Most top features have low correlation, indicating they capture distinct predictive signals",
+      "multicollinearity_concern": "Low - feature selection already removed highly redundant features"
+    },
+    "source": "correlation_analysis"
+  },
+  {
+    "id": "finding_010",
+    "category": "geographic",
+    "question_patterns": [
+      "suburb drivetime",
+      "15-minute city",
+      "15 minute city",
+      "urban vs suburban",
+      "location ring",
+      "outer suburb performance",
+      "downtown vs suburb"
+    ],
+    "answer": "The '15-minute suburb' pattern emerges as the optimal location strategy. Outer suburbs with tight amenity access (10-min drivetime) achieve the highest RevPAR growth at 11.6%, outperforming downtown locations (8.9%) and the 'donut ring' areas (7.0%). This challenges the traditional urban-centric view: it's not 'suburbs vs downtown' but rather 'suburbs WITH tight access to amenities' that perform best. The 15-minute city concept applies more strongly in suburbs than in urban cores.",
+    "supporting_data": {
+      "outer_suburb_10min": "11.6%",
+      "downtown_10min": "8.9%",
+      "donut_ring_10min": "7.0%",
+      "inner_suburb_10min": "9.2%",
+      "key_insight": "Outer suburbs with tight amenity access = optimal"
+    },
+    "source": "location_drivetime_analysis"
+  },
+  {
+    "id": "finding_011",
+    "category": "feature_analysis",
+    "question_patterns": [
+      "rank change",
+      "ranking change",
+      "which features rose",
+      "which features fell",
+      "biggest movers",
+      "importance ranking shift"
+    ],
+    "answer": "Several features saw dramatic rank changes after COVID. Biggest risers: 1) type_main (property class) rose from rank 100 to rank 1; 2) health_hospital access rose from rank 32 to rank 2; 3) trans_access (transit accessibility) rose from rank 78 to rank 7; 4) years_since_renov rose from rank 91 to rank 25. Biggest fallers: 1) mrkt_name dropped from rank 1 to rank 93; 2) state location dropped from rank 2 to rank 33; 3) is_sunbelt dropped from rank 4 to rank 60; 4) is_texas dropped from rank 5 to rank 82. This reflects a shift from geographic factors to property-specific and health-related factors.",
+    "supporting_data": {
+      "biggest_risers": [
+        {"feature": "type_main_te", "from": 100, "to": 1, "change": 99},
+        {"feature": "aarp_met_health_hospital", "from": 32, "to": 2, "change": 30},
+        {"feature": "aarp_met_trans_access", "from": 78, "to": 7, "change": 71}
+      ],
+      "biggest_fallers": [
+        {"feature": "mrkt_name_te", "from": 1, "to": 93, "change": -92},
+        {"feature": "state_te", "from": 2, "to": 33, "change": -31},
+        {"feature": "is_sunbelt", "from": 4, "to": 60, "change": -56}
+      ],
+      "interpretation": "Shift from geographic to property-specific factors"
+    },
+    "source": "feature_importance_ranking_analysis"
   }
 ]

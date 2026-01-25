@@ -1,5 +1,31 @@
 [
   {
+    "id": "finding_000",
+    "category": "summary",
+    "question_patterns": [
+      "most striking findings",
+      "key findings",
+      "main findings",
+      "summary of findings",
+      "what did you find",
+      "biggest discoveries",
+      "most important insights",
+      "comparing pre and post covid",
+      "pre vs post covid summary"
+    ],
+    "answer": "The most striking findings from our pre vs post COVID analysis are:\n\n1. **Performance Persistence Collapsed**: Only 19.6% of properties stayed in the same performance quartile. 93 properties fell from top (Q4) to bottom (Q1), showing COVID fundamentally reshuffled the market.\n\n2. **Amenity Preferences Flipped**: Grocery store importance increased 165%, park proximity increased 187%, while restaurant importance dropped 45% and CBD distance dropped 42%. Renters now prioritize daily-life accessibility over nightlife/dining.\n\n3. **The '15-Minute Suburb' Emerged**: Outer suburbs with tight amenity access (10-min drivetime) now outperform downtown (11.6% vs 8.9% RevPAR growth). The 15-minute city concept applies more strongly in suburbs than urban cores.\n\n4. **Property Class Matters More**: Property type (Class A/B/C/D) jumped from rank 100 to rank 1 in importance. Class D properties averaged 14% growth vs 6% for Class A.\n\n5. **Geographic Factors Faded**: Market name dropped from rank 1 to 93, state from rank 2 to 33. Property-specific and health-related factors now dominate over location.",
+    "supporting_data": {
+      "persistence_rate": "19.6%",
+      "grocery_importance_change": "+165%",
+      "restaurant_importance_change": "-45%",
+      "outer_suburb_performance": "11.6%",
+      "downtown_performance": "8.9%",
+      "class_d_growth": "14%",
+      "class_a_growth": "6%"
+    },
+    "source": "comprehensive_analysis_summary"
+  },
+  {
     "id": "finding_001",
     "category": "covid_impact",
     "question_patterns": [

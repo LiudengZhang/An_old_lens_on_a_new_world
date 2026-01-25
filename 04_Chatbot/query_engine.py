@@ -1,5 +1,6 @@
 """Query engine with 3-layer architecture."""
 import json
+import re
 import pandas as pd
 import numpy as np
 from openai import OpenAI
@@ -199,7 +200,9 @@ Provide a clear, professional answer:"""
                 context_parts.append(f"DRIVETIME ANALYSIS:\n{df.to_string()}")
 
         # Suburb × Drivetime interaction (15-minute city analysis)
-        if any(kw in question_lower for kw in ["suburb", "urban", "downtown", "ring", "15-minute city", "15 minute city", "location type"]):
+        # Note: use word boundaries to avoid false matches like "comparing" -> "ring"
+        suburb_keywords = ["suburb", "downtown", "15-minute city", "15 minute city", "location type", "outer suburb", "urban core", "donut ring"]
+        if any(kw in question_lower for kw in suburb_keywords) or re.search(r'\bring\b', question_lower):
             # Provide the pre-computed analysis from presentation notes
             suburb_data = """LOCATION × DRIVETIME PERFORMANCE (RevPAR Growth %):
                         10-min    15-min    30-min
@@ -237,7 +240,6 @@ This is the '15-minute suburb' pattern - the 15-minute city concept applies more
             training_path = DATA_FILES["training_data"]
             if importance_path.exists() and training_path.exists():
                 # Get top features
-                import re
                 match = re.search(r'top\s*(\d+)', question_lower)
                 n = min(int(match.group(1)), 25) if match else 15
 

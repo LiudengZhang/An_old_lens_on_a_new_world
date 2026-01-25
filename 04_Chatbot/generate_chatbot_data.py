@@ -111,29 +111,55 @@ if feat_imp_raw is not None and train_clean is not None:
     numeric_cols = train_clean.select_dtypes(include=[np.number]).columns.tolist()
     feature_cols = [c for c in numeric_cols if c not in exclude_cols]
 
-    # Use existing feature importance (skip slow re-training)
+    # Use existing feature importance as base, then compute pre/post correlations
     try:
-        # Map existing importance to feature columns
+        # Map existing importance to feature columns (overall model importance)
         imp_map = dict(zip(feat_imp_raw['feature'], feat_imp_raw['avg_importance']))
         importance_overall = np.array([imp_map.get(f, 0) for f in feature_cols])
 
-        # Normalize
+        # Normalize overall importance
         if importance_overall.sum() > 0:
             importance_overall = importance_overall / importance_overall.sum()
 
-        # Use overall for both pre/post (approximate)
-        importance_pre = importance_overall.copy()
-        importance_post = importance_overall.copy()
+        # Compute pre/post correlations with target to get differentiated importance
+        # Merge time_window_tag from train_raw if not in train_clean
+        if 'time_window_tag' not in train_clean.columns and train_raw is not None:
+            train_clean['time_window_tag'] = train_raw['time_window_tag'].values[:len(train_clean)]
+
+        pre_mask = train_clean['time_window_tag'] == 'pre'
+        post_mask = train_clean['time_window_tag'] == 'post'
+
+        # Compute absolute correlations for pre and post periods
+        importance_pre = []
+        importance_post = []
+        for f in feature_cols:
+            if f in train_clean.columns:
+                pre_corr = abs(train_clean.loc[pre_mask, [f, 'target']].corr().iloc[0, 1])
+                post_corr = abs(train_clean.loc[post_mask, [f, 'target']].corr().iloc[0, 1])
+                importance_pre.append(pre_corr if not np.isnan(pre_corr) else 0)
+                importance_post.append(post_corr if not np.isnan(post_corr) else 0)
+            else:
+                importance_pre.append(0)
+                importance_post.append(0)
+
+        importance_pre = np.array(importance_pre)
+        importance_post = np.array(importance_post)
+
+        # Normalize to sum to 1
+        if importance_pre.sum() > 0:
+            importance_pre = importance_pre / importance_pre.sum()
+        if importance_post.sum() > 0:
+            importance_post = importance_post / importance_post.sum()
 
         # Compute ranks
         rank_pre = (-importance_pre).argsort().argsort() + 1
         rank_post = (-importance_post).argsort().argsort() + 1
 
-        # Compute change
+        # Compute percentage change
         change_pct = np.where(
             importance_pre > 0.001,
             (importance_post - importance_pre) / importance_pre * 100,
-            0
+            np.where(importance_post > 0.001, 100, 0)  # New importance = +100%
         )
 
         # Categorize features

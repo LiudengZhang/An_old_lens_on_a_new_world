@@ -65,11 +65,11 @@
       "best drivetime radius",
       "optimal drivetime"
     ],
-    "answer": "The 10-minute drivetime radius shows the best predictive power for urban core areas (R²=0.74), while 15-minute works best for mixed suburban areas (R²=0.73). The 30-minute radius is most useful for outer suburbs where residents are accustomed to longer commutes, though it has lower overall explanatory power (R²=0.69). For most markets, 15-minute provides the best balance.",
+    "answer": "The 15-minute drivetime radius shows the best predictive power overall (R²=0.65), making it ideal for mixed suburban areas. The 10-minute and 30-minute radii have similar explanatory power (R²=0.62 each) but serve different purposes: 10-minute is best for downtown/urban core areas with walking/short trips, while 30-minute captures outer suburbs where residents are used to longer commutes. For most markets, 15-minute provides the best balance.",
     "supporting_data": {
-      "10min_r2": 0.74,
-      "15min_r2": 0.73,
-      "30min_r2": 0.69,
+      "10min_r2": 0.622,
+      "15min_r2": 0.650,
+      "30min_r2": 0.622,
       "recommended": "15min for general use"
     },
     "source": "drivetime_comparison_analysis"
@@ -84,14 +84,14 @@
       "model r2",
       "model rmse"
     ],
-    "answer": "The model achieves an overall R² of 0.72 with RMSE of 0.045. Performance varies by time period: pre-COVID predictions are more accurate (R²=0.78) than post-COVID (R²=0.65), reflecting increased market volatility after the pandemic. About 45% of properties are predicted in the correct quartile, and 82% within one quartile of actual.",
+    "answer": "The ensemble model (LightGBM + XGBoost + CatBoost + others) achieves an overall R² of 0.63 with RMSE of 0.13 on RevPAR growth prediction. Performance varies by time period: pre-COVID predictions have higher variance (RMSE=0.155, R²=0.44) than post-COVID (RMSE=0.107, R²=0.32). The model achieves strong quartile classification: 63% of properties are predicted in the correct quartile, and 97% within one quartile of actual.",
     "supporting_data": {
-      "overall_r2": 0.72,
-      "overall_rmse": 0.045,
-      "pre_covid_r2": 0.78,
-      "post_covid_r2": 0.65,
-      "exact_quartile_match": "45%",
-      "within_one_quartile": "82%"
+      "overall_r2": 0.63,
+      "overall_rmse": 0.13,
+      "pre_covid_r2": 0.44,
+      "post_covid_r2": 0.32,
+      "exact_quartile_match": "63%",
+      "within_one_quartile": "97%"
     },
     "source": "model_evaluation_metrics"
   },

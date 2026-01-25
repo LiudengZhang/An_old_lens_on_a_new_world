@@ -1,0 +1,29 @@
+# Rice Datathon 2025 - Requirements
+# Install with: pip install -r requirements.txt
+
+# Core data science
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+lightgbm>=4.0.0
+xgboost>=2.0.0
+catboost>=1.2.0
+optuna>=3.4.0
+
+# Optional: TabPFN (requires PyTorch)
+# tabpfn>=0.1.0
+# torch>=2.0.0
+
+# Optional: AutoGluon
+# autogluon>=1.0.0
+
+# Visualization (optional)
+# matplotlib>=3.7.0
+# seaborn>=0.12.0
+
+# Jupyter
+jupyter>=1.0.0
+ipykernel>=6.0.0

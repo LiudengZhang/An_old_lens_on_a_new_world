@@ -1,0 +1,21 @@
+# Data files
+*.csv
+*.json
+*.npy
+*.pkl
+*.ckpt
+*.pdf
+
+# Pycache
+__pycache__/
+*.pyc
+
+# Model outputs
+extra/
+catboost_info/
+
+# Mac
+.DS_Store
+
+# Sensitive
+*token*

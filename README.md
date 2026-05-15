@@ -1,8 +1,10 @@
-# Rice Datathon 2026 - RevPAR Growth Prediction
+# Rice Datathon 2026 — RevPAR Growth Prediction
 
 ## BroadVail Capital Partners Finance Track
 
 Predicting apartment RevPAR (Revenue Per Available Room) growth using neighborhood amenities and the **"X-Minute City"** concept.
+
+![Summary figure](05_Highlights/fig_summary_nature.png)
 
 ## Results
 
@@ -12,6 +14,11 @@ Predicting apartment RevPAR (Revenue Per Available Room) growth using neighborho
 | **Cross-Validation RMSE** | 0.0714 |
 | **Best Strategy** | Ridge Stacking (12 diverse models) |
 | **Key Insight** | Post-COVID, amenity access surpassed downtown proximity as the primary driver of RevPAR growth |
+
+## Two deliverables
+
+1. **ML pipeline** (`03_Rice_Datathon_Colab/`) — Ridge-stacking ensemble over 12 diverse models, feature-engineered across property / geographic / economic / amenity axes.
+2. **AI chatbot** (`04_Chatbot/`) — Streamlit app for natural-language queries over the model's predictions and feature importances, with a 3-layer query architecture (semantic search → structured queries → on-demand computation).
 
 ## Project Structure
 
